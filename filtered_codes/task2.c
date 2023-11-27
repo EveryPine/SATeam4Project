@@ -20,19 +20,19 @@ task main()
 {
   completeSearch();
   setSpeed(30, 30);
-	sleep(350);
-	turnLeft();
-	turnLeft();
-	sleep(500);
+  sleep(350);
+  turnLeft();
+  turnLeft();
+  sleep(500);
 
-	eraseDisplay();
-	DisplayMap();
-	sleep(1000);
-	convertGraph();
-	initDpTable();
-	getMoveArray();
-	moveRobot();
-	eraseDisplay();
-	printMaxScore();
-	sleep(10000);
+  eraseDisplay();
+  DisplayMap();
+  sleep(1000);
+  convertGraph();
+  initDpTable();
+  getMoveArray();
+  moveRobot();
+  eraseDisplay();
+  printMaxScore();
+  sleep(10000);
 }
