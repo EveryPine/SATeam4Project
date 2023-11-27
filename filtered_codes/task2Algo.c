@@ -58,7 +58,8 @@ byte findRedSeq(Point cur)
 		if ((red.redArray[i].r == cur.r) && (red.redArray[i].c == cur.c))
 			return i;
 	}
-	return -1; // error
+	setException(1);
+	return Error;
 }
 
 bool isVisited(Point cur, int v)
@@ -164,7 +165,7 @@ void getMoveArray()
 					maxScore = dp[0][nv];
 					initMoveArray(resultMove, nextMove.moveCount, nextMove.moves);
 				}
-				if (nextMove.moveCount < MAX_MOVE_COUNT)
+				else if (nextMove.moveCount < MAX_MOVE_COUNT)
 				{
 					initElement(e, next.r, next.c, dir.r, dir.c, nextMove.moveCount, nextMove.moves, nv);
 					push(&s, e);

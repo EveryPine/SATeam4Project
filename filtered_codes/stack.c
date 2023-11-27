@@ -12,17 +12,23 @@ typedef struct
 
 typedef struct
 {
-	Point cur;
-	Point robot;
-	MoveArray moveArray;
-	short v;
-} Element;
-
-typedef struct
-{
 	byte count;
 	Point redArray[MAX_RED_PATCH];
 } RedSet;
+
+typedef struct
+{
+	byte score;
+	byte moveCount;
+} Dp1Elem;
+
+typedef struct
+{
+	Point cur;
+	Point robot;
+	MoveArray moveArray;
+	byte v;
+} Element;
 
 typedef struct
 {
@@ -76,5 +82,5 @@ void pop(Stack *s, Element &e)
 	for (int i = 0; i < e.moveArray.moveCount; i++)
 		e.moveArray.moves[i] = s->data[s->top].moveArray.moves[i];
 	e.v = s->data[s->top].v;
-	(s->top)--;
+  (s->top)--;
 }

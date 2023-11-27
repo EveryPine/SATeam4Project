@@ -10,13 +10,21 @@ void initPoint(Point &point, byte r, byte c);
 void initMoveArray(MoveArray &moveArray, byte moveCount, byte *moves);
 void initElement(Element &e, byte curR, byte curC, byte robR, byte robC,
 byte moveCount, byte *moves, int v);
+void printMaxScore();
+void printMove();
 
 void initDpTable()
 {
 	for (int i = 0; i < 25; i++)
+	{
 		for (int j = 0; j < (1 << MAX_RED_PATCH); j++)
-			dp[i][j] = MIN;
-	dp[24][0] = 0;
+		{
+			dp[i][j].score = MIN;
+			dp[i][j].moveCount = MAX_MOVE_COUNT;
+		}
+	}
+	dp[24][0].score = 0;
+	dp[24][0].moveCount = 0;
 }
 
 byte absMove(Point robot, Point next)
@@ -59,7 +67,8 @@ byte findRedSeq(Point cur)
 		if ((red.redArray[i].r == cur.r) && (red.redArray[i].c == cur.c))
 			return i;
 	}
-	return -1; // error
+	setException(1);
+	return Error;
 }
 
 bool isVisited(Point cur, int v)
@@ -71,8 +80,8 @@ bool isVisited(Point cur, int v)
 byte getNextScore(Point prev, Point next, int v)
 {
 	if ((S[next.r][next.c] == 1) && isVisited(next, v))
-		return dp[5 * prev.r + prev.c][v];
-	return dp[5 * prev.r + prev.c][v] + S[next.r][next.c];
+		return dp[5 * prev.r + prev.c][v].score;
+	return dp[5 * prev.r + prev.c][v].score + S[next.r][next.c];
 }
 
 int handleRed(Point cur, int v)
@@ -155,17 +164,18 @@ void getMoveArray()
 			if (next.r < 0 || next.r >= 5 || next.c < 0 || next.c >= 5) continue;
 			nextScore = getNextScore(cur, next, e.v);
 			nv = handleRed(next, e.v);
-			if (dp[5 * next.r + next.c][nv] < nextScore)
+			if (dp[5 * next.r + next.c][nv].score <= nextScore && dp[5 * next.r + next.c][nv].moveCount > curMove.moveCount + 1)
 			{
 				initMoveArray(nextMove, curMove.moveCount, curMove.moves);
 				nextMove.moves[nextMove.moveCount++] = absMove(robotDir, dir);
-				dp[5 * next.r + next.c][nv] = nextScore;
-				if (next.r == 0 && next.c == 0 && dp[0][nv] > maxScore)
+				dp[5 * next.r + next.c][nv].score = nextScore;
+				dp[5 * next.r + next.c][nv].moveCount = nextMove.moveCount;
+				if (next.r == 0 && next.c == 0 && dp[0][nv].score >= maxScore)
 				{
-					maxScore = dp[0][nv];
 					initMoveArray(resultMove, nextMove.moveCount, nextMove.moves);
+					maxScore = dp[0][nv].score;
 				}
-				if (nextMove.moveCount < MAX_MOVE_COUNT)
+				else
 				{
 					initElement(e, next.r, next.c, dir.r, dir.c, nextMove.moveCount, nextMove.moves, nv);
 					push(&s, e);
@@ -186,6 +196,6 @@ void printMaxScore()
 {
 	byte mx = MIN;
 	for (int i = 0; i < 1 << MAX_RED_PATCH; i++)
-		if (mx < dp[0][i]) mx = dp[0][i];
+		if (mx < dp[0][i].score) mx = dp[0][i].score;
 	displayBigTextLine(1, "maxCount: %d", mx);
 }

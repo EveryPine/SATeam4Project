@@ -10,8 +10,8 @@
 
 #define MIN -100
 #define MAX_MOVE_COUNT 20
-#define MAX_RED_PATCH 9
-#define MAX_STACK_SIZE 25
+#define MAX_RED_PATCH 5
+#define MAX_STACK_SIZE 30
 
 // error code
 #define Error -99
