@@ -31,7 +31,6 @@ task main()
 	convertGraph();
 	initDpTable();
 	getMoveArray();
-	printMove();
 	moveRobot();
 	eraseDisplay();
 	printMaxScore();
