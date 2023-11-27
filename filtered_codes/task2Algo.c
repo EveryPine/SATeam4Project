@@ -3,10 +3,10 @@ void convertGraph()
 	for (int i = 0; i < 5; i++)
 		for (int j = 0; j < 5; j++)
 		{
-				if (S[i][j] == 0) S[i][j] = -1;
-				else if (S[i][j] == 1) S[i][j] = 4;
-				else if (S[i][j] == -1) S[i][j] = -4;
-				else S[i][j] = Error;
+			if (S[i][j] == 0) S[i][j] = -1;
+			else if (S[i][j] == 1) S[i][j] = 4;
+			else if (S[i][j] == -1) S[i][j] = -4;
+			else S[i][j] = Error;
 		}
 }
 
