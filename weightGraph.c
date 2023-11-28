@@ -19,11 +19,36 @@ int dir[4][2] = {{1,0},{-1,0},{0,1}, {0,-1}};
 int dirSearch[4][2] = {{0,-1},{0,1},{-1,0}, {1,0}};
 float tmp[4] = {-100,-100,-100,-100};
 int rDir = 1;
+int g_rDir=1;
 int tmp_count = 0;
-char taskArr[20], tmp_taskArr[20];
+char taskArr[20];
 int g_x = 4, g_y = 4;
 float weight = -100;
 int t_x, t_y;
+////
+int g=1;
+
+char g_taskW1[10];
+char g_taskW2[10];
+char g_taskW3[10];
+char g_taskW4[10];
+char g_taskW5[10];
+
+int visited = 31;            //11111
+int isVisited1 = 0;
+int isVisited2 = 0;
+int isVisited3 = 0;
+int isVisited4 = 0;
+int isVisited5 = 0;
+
+int dirW1 = 1;
+int dirW2 = 1;
+int dirW3 = 1;
+int dirW4 = 1;
+int dirW5 = 1;
+
+int tableXY[5][2] = {{0,0},{0,0},{0,0},{0,0},{0,0}};
+////
 
 void myStrcpy(char *dest, const char *src) {
     while (*src) {
@@ -160,7 +185,7 @@ void convertGraph(){
 }
 
 int* moveOneBlock(int x, int y, int k);
-char robotDir(int beforeX, int beforeY, int afterX, int afterY);
+char robotDir(int beforeX, int beforeY, int afterX, int afterY, int k);
 void makeWeightGraph(int a, int b, int k);
 
 int* moveOneBlock(int x, int y, int k){
@@ -220,7 +245,7 @@ int* moveOneBlock(int x, int y, int k){
                 if(y+dirSearch[i][1] >= 0) {
                     tmp[i] = W2[x][y+dirSearch[i][1]];
                     if(weight < tmp[i]) {
-                        printf("111111\n");
+
                         printf("비교 %f %f\n", weight, tmp[i]);
                         weight = tmp[i];
                         tmp_x = x, tmp_y = y+dirSearch[i][1];
@@ -411,6 +436,8 @@ int* moveOneBlock(int x, int y, int k){
     static int result[2]; // 정적 배열 사용
 
     result[0] = x, result[1] = y;
+    tableXY[k][0] = x;
+    tableXY[k][1] = y;
     return result;
 }
 void makeWeightGraph(int a, int b, int k){
@@ -532,7 +559,7 @@ void makeWeightGraph(int a, int b, int k){
             }
         }
     }
-    else if(k == 3){
+    else if(k == 3 && !isVisited4){
         while(!IsEmpty()){
             struct Point removedPoint = deleteq();
             for(int i = 0; i < 4; i++) {
@@ -613,11 +640,20 @@ void makeWeightGraph(int a, int b, int k){
 }
 int minimumSearch() {
     convertGraph();
-    char taskW1[10] = {'N','N','N','N','N','N','N','N','N','N'};
-    char taskW2[10] = {'N','N','N','N','N','N','N','N','N','N'};
-    char taskW3[10] = {'N','N','N','N','N','N','N','N','N','N'};
-    char taskW4[10] = {'N','N','N','N','N','N','N','N','N','N'};
-    char taskW5[10] = {'N','N','N','N','N','N','N','N','N','N'};
+    ////
+    /*
+    for(int i=0;i<10;i++) taskW1[i] = 'N';
+    for(int i=0;i<10;i++) taskW2[i] = 'N';
+    for(int i=0;i<10;i++) taskW3[i] = 'N';
+    for(int i=0;i<10;i++) taskW4[i] = 'N';
+    for(int i=0;i<10;i++) taskW5[i] = 'N';
+    */
+    ////
+    char taskW1[10]={'N','N','N','N','N','N','N','N','N','N'};
+    char taskW2[10]={'N','N','N','N','N','N','N','N','N','N'};
+    char taskW3[10]={'N','N','N','N','N','N','N','N','N','N'};
+    char taskW4[10]={'N','N','N','N','N','N','N','N','N','N'};
+    char taskW5[10]={'N','N','N','N','N','N','N','N','N','N'};
 
     int countW1 = 0;
     int countW2 = 0;
@@ -627,8 +663,9 @@ int minimumSearch() {
     for(int i = 0; i < 5; i++){
         printf("==================\n");
         int a = Red[i][0]; int b = Red[i][1];
+        printf("빨간패치의 좌표 : %d %d\n", a,b);
         makeWeightGraph(a, b, i);
-        /*
+        
         for(int j = 0; j<5; j++) {
             for(int k = 0; k < 5; k++){
                 printf("%f ", W1[j][k]);
@@ -663,36 +700,52 @@ int minimumSearch() {
             }
             printf("\n");
         }
-        */
+        
         
         int *result; // 포인터 변수 선언
         t_x = g_x,  t_y = g_y;
         weight = -100;
-        rDir = 1;
+        rDir = g_rDir;
         int ii = 0;
         
         while(1){
             result = moveOneBlock(t_x, t_y, i); // 포인터에 반환값 할당
+            printf(")))%d\n",i);
             //printf("%c ", robotDir(t_x, t_y, result[0], result[1]));
             if(i == 0) {
-                taskW1[ii]=robotDir(t_x, t_y, result[0], result[1]);
-                countW1++;
+                if(!isVisited1) {
+                    taskW1[ii]=robotDir(t_x, t_y, tableXY[i][0], tableXY[i][1], i);
+                    countW1++;
+                }
+                else countW1 = 100;
             }
             else if(i == 1) {
-                taskW2[ii]=robotDir(t_x, t_y, result[0], result[1]);
-                countW2++;
+                if(!isVisited2) {
+                    taskW2[ii]=robotDir(t_x, t_y, tableXY[i][0], tableXY[i][1], i);
+                    countW2++;
+                }
+                else countW2 = 100;
             }
-            else if(i == 2) {   
-                taskW3[ii]=robotDir(t_x, t_y, result[0], result[1]);
-                countW3++;
+            else if(i == 2) {  
+                if(!isVisited3) { 
+                    taskW3[ii]=robotDir(t_x, t_y, tableXY[i][0], tableXY[i][1], i);
+                    countW3++;
+                }
+                else countW3=100;
             }
             else if(i == 3) {
-                taskW4[ii]=robotDir(t_x, t_y, result[0], result[1]);
-                countW4++;
+                if(!isVisited4) { 
+                    taskW4[ii]=robotDir(t_x, t_y, tableXY[i][0], tableXY[i][1], i);
+                    countW4++;
+                }
+                else countW4=100;
             }
             else if(i == 4) {
-                taskW5[ii]=robotDir(t_x, t_y, result[0], result[1]);
-                countW5++;
+                if(!isVisited5) { 
+                    taskW5[ii]=robotDir(t_x, t_y, tableXY[i][0], tableXY[i][1], i);
+                    countW5++;
+                }
+                else countW5=100;
             }
             //char dirStr[2]; // 단일 문자를 위한 문자열
             //dirStr[0] = robotDir(t_x, t_y, result[0], result[1]); // 문자를 저장
@@ -717,72 +770,146 @@ int minimumSearch() {
         
     }
     int min = countW1;
-    int g=1;
+    ////
+    g=1;
+    g_x = tableXY[0][0];
+    g_y = tableXY[0][1];
+    g_rDir = dirW1;
+    ////
+    printf("\nCount : %d | CountW1 : %d\n", min, countW1);
     myStrcpy(taskArr, taskW1);
-    
+    printf("\nCount : %d | CountW2 : %d\n", min, countW2);
     if(min > countW2) {
         min = countW2;
         g=2;
+        g_x = tableXY[1][0];
+        g_y = tableXY[1][1];
+        g_rDir = dirW2;
+        printf("\nIN2\n");
+        for(int aa = 0; aa < 10; aa++) printf("=%c ", taskW2[aa]);
         myStrcpy(taskArr, taskW2);
     }
+    printf("\nCount : %d | CountW3 : %d\n", min, countW3);
     if(min > countW3) {
         min = countW3;
         g=3;
+        g_x = tableXY[2][0];
+        g_y = tableXY[2][1];
+        g_rDir = dirW3;
+        printf("\nIN3\n");
         myStrcpy(taskArr, taskW3);
+        for(int aa = 0; aa < 10; aa++) printf("=%c ", taskW3[aa]);
     }
+    printf("\nCount : %d | CountW4 : %d\n", min, countW4);
     if(min > countW4) {
         min = countW4;
         g=4;
+        g_x = tableXY[3][0];
+        g_y = tableXY[3][1];
+        g_rDir = dirW4;
+        printf("\nIN4\n");
         myStrcpy(taskArr, taskW4);
+        for(int aa = 0; aa < 10; aa++) printf("=%c ", taskW4[aa]);
+        
     }
+    printf("\nCount : %d | CountW5 : %d\n", min, countW5);
     if(min > countW5) {
         min = countW5;
         g=5;
+        g_x = tableXY[4][0];
+        g_y = tableXY[4][1];
+        g_rDir = dirW5;
+        printf("\nIN5\n");
         myStrcpy(taskArr, taskW5);
     }
 
     for(int aa = 0; aa < 10; aa++) printf("=%c ", taskArr[aa]);
     printf("\n");
     
+    myStrcpy(g_taskW1, taskW1);
+    myStrcpy(g_taskW2, taskW2);
+    myStrcpy(g_taskW3, taskW3);
+    myStrcpy(g_taskW4, taskW4);
+    myStrcpy(g_taskW5, taskW5);
     
     return 0;
 }
 
-char robotDir(int beforeX, int beforeY, int afterX, int afterY){
+char robotDir(int beforeX, int beforeY, int afterX, int afterY, int k){
     tmp_count++;
     if(rDir == 0) { //동
         if(beforeX < afterX) { //아래
             rDir = 2;
+            if(k ==0) dirW1 = 2;
+            else if(k==1) dirW2 = 2;
+            else if(k==2) dirW3 = 2;
+            else if(k==3) dirW4 = 2;
+            else dirW5 = 2;
             return 'R';
         }  
         else if(beforeX>afterX) { //위
             rDir=3;
+            if(k ==0) dirW1 = 3;
+            else if(k==1) dirW2 = 3;
+            else if(k==2) dirW3 = 3;
+            else if(k==3) dirW4 = 3;
+            else dirW5 = 3;
             return 'L';
         }
         else if(beforeY<afterY) { //오른 
             rDir=0;
+            if(k ==0) dirW1 = 0;
+            else if(k==1) dirW2 = 0;
+            else if(k==2) dirW3 = 0;
+            else if(k==3) dirW4 = 0;
+            else dirW5 = 0;
             return 'F';
         }
         else if(beforeY>afterY) { // 왼
             rDir=1;
+            if(k ==0) dirW1 = 1;
+            else if(k==1) dirW2 = 1;
+            else if(k==2) dirW3 = 1;
+            else if(k==3) dirW4 = 1;
+            else dirW5 = 1;
             return 'U';
         }
     }
     else if(rDir == 1){ //서
         if(beforeX < afterX) { //아래
             rDir = 2;
+            if(k ==0) dirW1 = 2;
+            else if(k==1) dirW2 = 2;
+            else if(k==2) dirW3 = 2;
+            else if(k==3) dirW4 = 2;
+            else dirW5 = 2;
             return 'L';
         }  
         else if(beforeX>afterX) { //위
             rDir=3;
+            if(k ==0) dirW1 = 3;
+            else if(k==1) dirW2 = 3;
+            else if(k==2) dirW3 = 3;
+            else if(k==3) dirW4 = 3;
+            else dirW5 = 3;
             return 'R';
         }
         else if(beforeY<afterY) { //오른
             rDir=0;
+            if(k ==0) dirW1 = 0;
+            else if(k==1) dirW2 = 0;
+            else if(k==2) dirW3 = 0;
+            else if(k==3) dirW4 = 0;
+            else dirW5 = 0;
             return 'U';
         }
         else if(beforeY>afterY) { //왼
             rDir=1;
+            if(k ==0) dirW1 = 1;
+            else if(k==1) dirW2 = 1;
+            else if(k==2) dirW3 = 1;
+            else if(k==3) dirW4 = 1;
+            else dirW5 = 1;
             return 'F';
         }
 
@@ -790,36 +917,76 @@ char robotDir(int beforeX, int beforeY, int afterX, int afterY){
     else if(rDir == 2){ //남
         if(beforeX < afterX) { //아래
             rDir = 2;
+            if(k ==0) dirW1 = 2;
+            else if(k==1) dirW2 = 2;
+            else if(k==2) dirW3 = 2;
+            else if(k==3) dirW4 = 2;
+            else dirW5 = 2;
             return 'F';
         }  
         else if(beforeX>afterX) { //위
             rDir=3;
+            if(k ==0) dirW1 = 3;
+            else if(k==1) dirW2 = 3;
+            else if(k==2) dirW3 = 3;
+            else if(k==3) dirW4 = 3;
+            else dirW5 = 3;
             return 'U';
         }
         else if(beforeY<afterY) { //오른
             rDir=0;
+            if(k ==0) dirW1 = 0;
+            else if(k==1) dirW2 = 0;
+            else if(k==2) dirW3 = 0;
+            else if(k==3) dirW4 = 0;
+            else dirW5 = 0;
             return 'L';
         }
         else if(beforeY>afterY) { //왼
             rDir=1;
+            if(k ==0) dirW1 = 1;
+            else if(k==1) dirW2 = 1;
+            else if(k==2) dirW3 = 1;
+            else if(k==3) dirW4 = 1;
+            else dirW5 = 1;
             return 'R';
         }     
     }
     else if(rDir == 3){ //북
         if(beforeX < afterX) { //아래
             rDir = 2;
+            if(k ==0) dirW1 = 2;
+            else if(k==1) dirW2 = 2;
+            else if(k==2) dirW3 = 2;
+            else if(k==3) dirW4 = 2;
+            else dirW5 = 2;
             return 'U';
         }  
         else if(beforeX>afterX) { //위
             rDir=3;
+            if(k ==0) dirW1 = 3;
+            else if(k==1) dirW2 = 3;
+            else if(k==2) dirW3 = 3;
+            else if(k==3) dirW4 = 3;
+            else dirW5 = 3;
             return 'F';
         }
         else if(beforeY<afterY) { //오른
             rDir=0;
+            if(k ==0) dirW1 = 0;
+            else if(k==1) dirW2 = 0;
+            else if(k==2) dirW3 = 0;
+            else if(k==3) dirW4 = 0;
+            else dirW5 = 0;
             return 'R';
         }
         else if(beforeY>afterY) { //왼
             rDir=1;
+            if(k ==0) dirW1 = 1;
+            else if(k==1) dirW2 = 1;
+            else if(k==2) dirW3 = 1;
+            else if(k==3) dirW4 = 1;
+            else dirW5 = 1;
             return 'L';
         }
     }
@@ -827,4 +994,73 @@ char robotDir(int beforeX, int beforeY, int afterX, int afterY){
 }
 //////////////////////////////////////////////////////////////
 
+void realMove(char c){
+    
+    if(c=='R')
+        printf("|R");//오른쪽
+    else if(c=='L') 
+        printf("|L");//왼쪽
+    else if(c=='F')
+        printf("|F");//전진
+    else if(c=='U')
+        printf("|U");//U턴
+}
+void main(){
+    while(visited != 0){
+        minimumSearch();
+        switch(g){
+            case 1: 
+                for (int i = 0;i<10;i++){
+                    if(g_taskW1[i]!='N')
+                        realMove(g_taskW1[i]);
+                }
+                printf("\n");
+                visited=visited-16;             //visited=01111
+                isVisited1 = 1;
+                break;
+            case 2:
+                for (int i = 0;i<10;i++){
+                    if(g_taskW2[i]!='N')
+                        realMove(g_taskW2[i]);
+                }
+                printf("\n");
+                visited=visited-8;              //visited=10111
+                isVisited2 = 1;
+                break;
+            case 3:
+                for (int i = 0;i<10;i++){
+                    if(g_taskW3[i]!='N')
+                        realMove(g_taskW3[i]);
+                }
+                printf("\n");
+                visited=visited-4;              //visited=11011
+                isVisited3 = 1;
+                break;
+            case 4:
+                for (int i = 0;i<10;i++){
+                    if(g_taskW4[i]!='N')
+                        realMove(g_taskW4[i]);
+                }
+                printf("\n");
+                visited=visited-2;              //visited=11101
+                isVisited4 = 1;
+                break;
+            case 5:
+                for (int i = 0;i<10;i++){
+                    if(g_taskW5[i]!='N')
+                        realMove(g_taskW5[i]);
+                }
+                printf("\n");
+                visited=visited-1;              //visited=11110
+                isVisited5 = 1;
+                break;
+        }
+        printf("\n|||%d %d %d %d|||\n", g_x, g_y, t_x, t_y);
+    }   
+    
+    if(visited == 0){                   //도착점을 향함
+        
+    }
+
+}
 
