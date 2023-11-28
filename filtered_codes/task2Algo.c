@@ -68,11 +68,11 @@ bool isVisited(Point cur, int v)
 	return false;
 }
 
-byte getNextScore(Point prev, Point next, int v)
+byte getNextScore(Point cur, Point next, int v)
 {
 	if ((S[next.r][next.c] == 4) && isVisited(next, v))
-		return dp[5 * prev.r + prev.c][v] - 4;
-	return dp[5 * prev.r + prev.c][v] + S[next.r][next.c];
+		return dp[5 * cur.r + cur.c][v] - 4;
+	return dp[5 * cur.r + cur.c][v] + S[next.r][next.c];
 }
 
 int handleRed(Point cur, int v)
