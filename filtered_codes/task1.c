@@ -8,14 +8,8 @@
 
 int g_nMotorSpeedSetting = 45, g_vertex = 0, g_count = 0, g_row = 0, g_val = 6, g_init = 0;
 float g_rotationOffset = 0.4;
-int S[5][5] = {
-    {0, 1, -1, 0, 0},
-    {-1, 1, -1, 0, 0},
-    {1, 0, -1, 1, 0},
-    {1, 0, -1, 0, 0},
-    {0, 0, 0, 0, 0}
-};
-Dp1Elem dp[25][1 << MAX_RED_PATCH];
+int S[5][5];
+byte dp[25][1 << MAX_RED_PATCH];
 RedSet red;
 MoveArray resultMove;
 
@@ -24,7 +18,7 @@ MoveArray resultMove;
 
 task main()
 {
-  /*completeSearch();
+  completeSearch();
   setSpeed(30, 30);
 	sleep(350);
 	turnLeft();
@@ -33,12 +27,12 @@ task main()
 
 	eraseDisplay();
 	DisplayMap();
-	sleep(1000);*/
+	sleep(1000);
 	initDpTable();
 	getMoveArray();
 	printMove();
-	//moveRobot();
-	//eraseDisplay();
+	moveRobot();
+	eraseDisplay();
 	printMaxScore();
 	sleep(10000);
 }

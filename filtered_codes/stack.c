@@ -18,12 +18,6 @@ typedef struct
 
 typedef struct
 {
-	byte score;
-	byte moveCount;
-} Dp1Elem;
-
-typedef struct
-{
 	Point cur;
 	Point robot;
 	MoveArray moveArray;
