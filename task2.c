@@ -4,7 +4,7 @@
 #pragma config(Motor,  motorB,          lm,            tmotorEV3_Large, PIDControl, encoder)
 #pragma config(Motor,  motorC,          rm,            tmotorEV3_Large, PIDControl, encoder)
 #include "define.c"
-#include "stack.c"
+#include "struct.c"
 
 int g_nMotorSpeedSetting = 45, g_vertex = 0, g_count = 0, g_row = 0, g_val = 6, g_init = 0;
 float g_rotationOffset = 0.4;
@@ -14,25 +14,25 @@ RedSet red;
 MoveArray resultMove;
 
 #include "colorStore.c"
-#include "task1Algo.c"
+#include "task2Algo.c"
 
 task main()
 {
   completeSearch();
   setSpeed(30, 30);
-	sleep(350);
-	turnLeft();
-	turnLeft();
-	sleep(500);
+  sleep(350);
+  turnLeft();
+  turnLeft();
+  sleep(500);
 
-	eraseDisplay();
-	DisplayMap();
-	sleep(1000);
-	initDpTable();
-	getMoveArray();
-	printMove();
-	moveRobot();
-	eraseDisplay();
-	printMaxScore();
-	sleep(10000);
+  eraseDisplay();
+  DisplayMap();
+  sleep(1000);
+  convertGraph();
+  initDpTable();
+  getMoveArray();
+  moveRobot();
+  eraseDisplay();
+  printMaxScore();
+  sleep(10000);
 }

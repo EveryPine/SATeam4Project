@@ -369,7 +369,7 @@ void moveRobot()
 		else if (resultMove.moves[i] == Down) goDown();
 		else if (resultMove.moves[i] == Left) goLeft();
 		else if (resultMove.moves[i] == Right) goRight();
-      setSpeed(0,0);
+  	setSpeed(0,0);
 		sleep(1000);
 	}
 }

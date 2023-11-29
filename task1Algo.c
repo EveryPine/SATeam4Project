@@ -1,3 +1,14 @@
+void initWGraph()
+{
+	for (int i = 0; i < 5; i++)
+		for (int j = 0; j < 5; j++)
+		{
+			if (S[i][j] == 0) wGraph[i][j] = -1;
+			else if (S[i][j] == 1) wGraph[i][j] = 10;
+			else if (S[i][j] == -1) wGraph[i][j] = -10;
+		}
+}
+
 void initDpTable()
 {
 	for (int i = 0; i < 25; i++)
@@ -57,14 +68,14 @@ bool isVisited(Point cur, int v)
 
 byte getNextScore(Point prev, Point next, int v)
 {
-	if ((S[next.r][next.c] == 1) && isVisited(next, v))
-		return dp[5 * prev.r + prev.c][v];
-	return dp[5 * prev.r + prev.c][v] + S[next.r][next.c];
+	if ((wGraph[next.r][next.c] == 10) && isVisited(next, v))
+		return dp[5 * prev.r + prev.c][v] - 1;
+	return dp[5 * prev.r + prev.c][v] + wGraph[next.r][next.c];
 }
 
 int handleRed(Point cur, int v)
 {
-	if ((S[cur.r][cur.c] != 1) || isVisited(cur, v))
+	if ((wGraph[cur.r][cur.c] != 10) || isVisited(cur, v))
 		return v;
 	return ((1 << findRedSeq(cur)) | v);
 }
@@ -76,7 +87,7 @@ void initRedSet()
 	{
 		for (int j = 0; j < 5; j++)
 		{
-			if (S[i][j] == 1)
+			if (wGraph[i][j] == 10)
 			{
 				red.redArray[red.count].r = i;
 				red.redArray[red.count].c = j;
@@ -171,8 +182,44 @@ void printMove()
 
 void printMaxScore()
 {
-	byte mx = MIN;
-	for (int i = 0; i < 1 << MAX_RED_PATCH; i++)
-		if (mx < dp[0][i]) mx = dp[0][i];
-	displayBigTextLine(1, "maxCount: %d", mx);
+	int score = 0;
+	Point curPoint, nextPoint, robotDir, nextDir;
+	initPoint(curPoint, 4, 4);
+	initPoint(robotDir, 0, -1);
+	for (int i = 0; i < resultMove.moveCount; i++)
+	{
+		if (robotDir.r == 0 && robotDir.c == 1)
+		{
+			if (resultMove.moves[i] == Up) initPoint(nextDir, 0, 1);
+			if (resultMove.moves[i] == Down) initPoint(nextDir, 0, -1);
+			if (resultMove.moves[i] == Left) initPoint(nextDir, -1, 0);
+			if (resultMove.moves[i] == Right) initPoint(nextDir, 1, 0);
+		}
+		if (robotDir.r == 0 && robotDir.c == -1)
+		{
+			if (resultMove.moves[i] == Up) initPoint(nextDir, 0, -1);
+			if (resultMove.moves[i] == Down) initPoint(nextDir, 0, 1);
+			if (resultMove.moves[i] == Left) initPoint(nextDir, 1, 0);
+			if (resultMove.moves[i] == Right) initPoint(nextDir, -1, 0);
+		}
+		if (robotDir.r == 1 && robotDir.c == 0)
+		{
+			if (resultMove.moves[i] == Up) initPoint(nextDir, 1, 0);
+			if (resultMove.moves[i] == Down) initPoint(nextDir, -1, 0);
+			if (resultMove.moves[i] == Left) initPoint(nextDir, 0, 1);
+			if (resultMove.moves[i] == Right) initPoint(nextDir, 0, -1);
+		}
+		if (robotDir.r == -1 && robotDir.c == 0)
+		{
+			if (resultMove.moves[i] == Up) initPoint(nextDir, -1, 0);
+			if (resultMove.moves[i] == Down) initPoint(nextDir, 1, 0);
+			if (resultMove.moves[i] == Left) initPoint(nextDir, 0, -1);
+			if (resultMove.moves[i] == Right) initPoint(nextDir, 0, 1);
+		}
+		initPoint(nextPoint, curPoint.r + nextDir.r, curPoint.c + nextDir.c);
+		score += S[nextPoint.r][nextPoint.c];
+		initPoint(curPoint, nextPoint.r, nextPoint.c);
+		initPoint(robotDir, nextDir.r, nextDir.c);
+	}
+	displayBigTextLine(1, "maxCount: %d", score);
 }
