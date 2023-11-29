@@ -9,30 +9,32 @@
 int g_nMotorSpeedSetting = 45, g_vertex = 0, g_count = 0, g_row = 0, g_val = 6, g_init = 0;
 float g_rotationOffset = 0.4;
 int S[5][5];
+int wGraph[5][5];
 byte dp[25][1 << MAX_RED_PATCH];
 RedSet red;
 MoveArray resultMove;
 
 #include "colorStore.c"
-#include "task2Algo.c"
+#include "task1Algo.c"
 
 task main()
 {
   completeSearch();
   setSpeed(30, 30);
-  sleep(350);
-  turnLeft();
-  turnLeft();
-  sleep(500);
+	sleep(350);
+	turnLeft();
+	turnLeft();
+	sleep(500);
 
-  eraseDisplay();
-  DisplayMap();
-  sleep(1000);
-  convertGraph();
-  initDpTable();
-  getMoveArray();
-  moveRobot();
-  eraseDisplay();
-  printMaxScore();
-  sleep(10000);
+	eraseDisplay();
+	DisplayMap();
+	sleep(1000);
+	initWGraph();
+	initDpTable();
+	getMoveArray();
+	printMove();
+	moveRobot();
+	eraseDisplay();
+	printMaxScore();
+	sleep(10000);
 }

@@ -59,6 +59,7 @@
   "files.associations": {
     "mergedcode": "c",
     "bitset": "c",
-    "algorithm": "c"
+    "algorithm": "c",
+    "cstddef": "c"
   }
 }
