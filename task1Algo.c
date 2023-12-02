@@ -183,6 +183,7 @@ void printMove()
 void printMaxScore()
 {
 	int score = 0;
+	int v = 0;
 	Point curPoint, nextPoint, robotDir, nextDir;
 	initPoint(curPoint, 4, 4);
 	initPoint(robotDir, 0, -1);
@@ -217,7 +218,9 @@ void printMaxScore()
 			if (resultMove.moves[i] == Right) initPoint(nextDir, 0, 1);
 		}
 		initPoint(nextPoint, curPoint.r + nextDir.r, curPoint.c + nextDir.c);
-		score += S[nextPoint.r][nextPoint.c];
+		if (!(S[nextPoint.r][nextPoint.c] == 1 && isVisited(nextPoint, v)))
+			score += S[nextPoint.r][nextPoint.c];
+		v = ((1 << findRedSeq(nextPoint)) | v);
 		initPoint(curPoint, nextPoint.r, nextPoint.c);
 		initPoint(robotDir, nextDir.r, nextDir.c);
 	}
